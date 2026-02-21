@@ -59,7 +59,45 @@ def add_product():
     conn.commit()
     conn.close()
     return {"status": "success"}
+@app.route("/admin")
+def admin_page():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Admin Panel</title>
+    </head>
+    <body>
+        <h2>Добавить товар</h2>
 
+        <input id="name" placeholder="Название"><br><br>
+        <input id="price" placeholder="Цена"><br><br>
+        <input id="image" placeholder="Ссылка на фото"><br><br>
+        <textarea id="desc" placeholder="Описание"></textarea><br><br>
+
+        <button onclick="addProduct()">Добавить</button>
+
+        <script>
+        function addProduct() {
+            fetch("/api/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: document.getElementById("name").value,
+                    price: document.getElementById("price").value,
+                    description: document.getElementById("desc").value,
+                    image: document.getElementById("image").value
+                })
+            })
+            .then(res => res.json())
+            .then(data => alert("Товар добавлен!"));
+        }
+        </script>
+    </body>
+    </html>
+    """
 if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 5000))
